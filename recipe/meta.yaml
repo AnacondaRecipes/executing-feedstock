@@ -18,9 +18,11 @@ build:
 requirements:
   host:
     - pip
-    - python >=2.7
+    - python
     - setuptools
     - setuptools_scm
+    - toml
+    - wheel
   run:
     - python >=2.7
 
@@ -39,6 +41,7 @@ about:
   license_family: MIT
   license_file: LICENSE.txt
   dev_url: https://github.com/alexmojaki/executing
+  doc_url: https://github.com/alexmojaki/executing/blob/master/README.md
 
 extra:
   recipe-maintainers:
