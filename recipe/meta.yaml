@@ -1,19 +1,18 @@
 {% set name = "executing" %}
-{% set version = "0.8.3" %}
-
+{% set version = "2.2.1" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: c6554e21c6b060590a6d3be4b82fb78f8f0194d809de5ea7df1c093763311501
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: 3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4
 
 build:
   number: 0
-  noarch: python
-  script: {{ PYTHON }} -m pip install . -vv
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  skip: true  # [py<38]
 
 requirements:
   host:
@@ -21,22 +20,33 @@ requirements:
     - python
     - setuptools
     - setuptools_scm
-    - toml
     - wheel
   run:
-    - python >=2.7
+    - python
 
 test:
+  source_files:
+    - tests
   imports:
     - executing
-  commands:
-    - pip check
+    - executing._exceptions
+    - executing._utils
+    - executing.executing
   requires:
     - pip
+    - pytest
+    - ipython
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    # no littleutils in main channel to run test_pytest.py
+    # test_main.py: AssertionError: (<ast.Call object at 0x1043cda80>, <class 'ast.Attribute'>)
+    - pytest -v tests --ignore=tests/test_pytest.py --ignore=tests/test_main.py
 
 about:
   home: https://pypi.org/project/executing
   summary: Get the currently executing AST node of a frame, and other information
+  description: Get the currently executing AST node of a frame, and other information
   license: MIT
   license_family: MIT
   license_file: LICENSE.txt
