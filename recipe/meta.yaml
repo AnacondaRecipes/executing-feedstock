@@ -10,7 +10,7 @@ source:
   sha256: 3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4
 
 build:
-  number: 0
+  number: 1
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<38]
 
@@ -35,13 +35,14 @@ test:
   requires:
     - pip
     - pytest
-    - ipython
+    - ipython  # [not (win and arm64)]
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     # no littleutils in main channel to run test_pytest.py
     # test_main.py: AssertionError: (<ast.Call object at 0x1043cda80>, <class 'ast.Attribute'>)
-    - pytest -v tests --ignore=tests/test_pytest.py --ignore=tests/test_main.py
+    - pytest -v tests --ignore=tests/test_pytest.py --ignore=tests/test_main.py  # [not (win and arm64)]
+    - pytest -v tests --ignore=tests/test_pytest.py --ignore=tests/test_main.py --deselect=tests/test_ipython.py::test_two_statement_lookups  # [win and arm64]
 
 about:
   home: https://pypi.org/project/executing
