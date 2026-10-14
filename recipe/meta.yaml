@@ -1,5 +1,5 @@
 {% set name = "executing" %}
-{% set version = "2.2.1" %}
+{% set version = "2.3.0" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  sha256: 3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4
+  sha256: 15919cb5d667e5cb4e099511971d00d659573fff2dd5c4e6cd8b71636c7858d2
 
 build:
-  number: 1
+  number: 0
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
   skip: true  # [py<38]
 
@@ -18,9 +18,10 @@ requirements:
   host:
     - pip
     - python
-    - setuptools
+    - setuptools >=68
     - setuptools_scm
     - wheel
+    - setuptools-scm >=8
   run:
     - python
 
